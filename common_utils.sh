@@ -134,6 +134,8 @@ function clean_code {
       && absolute_path=$(realpath $relative_path) \
       && new_contents="${contents:0:8}$absolute_path" \
       && echo $new_contents > .git)
+   cat "$repo_dir/.git"
+   echo $(cd $repo_dir && git describe --all)
 }
 
 function build_wheel_cmd {
