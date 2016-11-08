@@ -118,6 +118,22 @@ function clean_code {
         && git clean -fxd \
         && git reset --hard \
         && git submodule update --init --recursive)
+
+   # Fix for Versioneer
+   #
+   # Versioneer requires that the package be built in a valid git
+   # repository. `pip wheel .` copies the package to a temporary
+   # directory then builds the wheel. The copying breaks the
+   # repository state of the package because of the broken relative
+   # path in the .git file of a submodule. To avoid this, we convert
+   # the relative path to an absolute path.
+   # See https://github.com/matthew-brett/multibuild/issues/11
+   (cd $repo_dir \
+      && contents=$(cat .git) \
+      && relative_path=${contents:8} \
+      && absolute_path=$(realpath $relative_path) \
+      && new_contents="${contents:0:8}$absolute_path" \
+      && echo $new_contents > .git)
 }
 
 function build_wheel_cmd {
