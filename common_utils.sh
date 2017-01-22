@@ -119,8 +119,9 @@ function clean_code {
     fill_submodule "$repo_dir"
     (cd $repo_dir \
         && git fetch origin \
-        && git checkout $build_commit \
+        && git config --local --bool core.bare false \
         && git clean -fxd \
+        && git checkout $build_commit \
         && git reset --hard \
         && git submodule update --init --recursive)
 }
